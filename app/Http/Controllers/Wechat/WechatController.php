@@ -69,7 +69,7 @@ class WechatController extends Controller
     if ($event=='subscribe') {
         $openid = $xml_obj->FromUserName;   //获取用户的openid
         //判断用户是否已存在
-        $u = UserModel::where('openid',$openid)->first();
+        $u = UserModel::where(['openid'=>$openid])->first();
         if($u){
             $msg = '欢迎回来';
             $xml = '<xml>
