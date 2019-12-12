@@ -11,7 +11,7 @@ class TestController extends Controller
 {
 	public function test()
 	{
-		echo "Hello World !祝你好远！";
+		echo "Hello World !祝你好远！12312313123";
 	}
 
 	public function redis1()
