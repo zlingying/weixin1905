@@ -20,7 +20,8 @@ class WechatController extends Controller
 
     protected function getAccessToken()
     {
-        $url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='.env('WX_APPID').'&secret='.env('WX_APPSECRET');
+
+        $url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='.env('WX_APPID').'&secret='.env('WX_APPSECREET');
         $data_json = file_get_contents($url);
         $arr = json_decode($data_json,true);
         return $arr['access_token'];
@@ -91,7 +92,6 @@ class WechatController extends Controller
               'openid' => $openid,
               'nickname' => $u['nickname'],
               'sex' => $u['sex'],
-              'headimgurl' => $u['headimgurl'],
               'subscribe_time' => $u['subscribe_time']
           ];
 
