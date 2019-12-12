@@ -4,19 +4,39 @@ namespace App\Http\Controllers\Wechat;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Model\UserModel;
 
 class WechatController extends Controller
 {
-    public function checkSignature()
-	{
-        /**
+
+    protected $access_token;
+
+    public function __construct()
+    {
+      //获取 access_token
+      $this->access_token = $this->getAccessToken();
+    }
+
+
+    protected function getAccessToken()
+    {
+        $url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='.env('WX_APPID').'&secret='.env('WX_APPSECRET');
+        $data_json = file_get_contents($url);
+        $arr = json_decode($data_json,true);
+        return $arr['access_token'];
+    }
+
+
+    /**
          * 处理接入请求
          */
-		$token = '2259b56f5898cd6192c50';    //开发提前设置好的 token
+    public function checkSignature()
+	{
+		  $token = '2259b56f5898cd6192c50';    //开发提前设置好的 token
 	    $signature = $_GET["signature"];
 	    $timestamp = $_GET["timestamp"];
 	    $nonce = $_GET["nonce"];
-		$echostr = $_GET['echostr'];
+		  $echostr = $_GET['echostr'];
 
 	    $tmpArr = array($token, $timestamp, $nonce);
 	    sort($tmpArr, SORT_STRING);
@@ -28,16 +48,9 @@ class WechatController extends Controller
 	    }else{
 	        die('Not OK!');
 	    }
-	}
+	} 
 
 
-    /**
-     * 获取用户基本信息
-     */
-    public function getUserInfo()
-    {
-        $url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN";
-    }
     /**
      * 接收微信推送事件
      */
@@ -46,13 +59,58 @@ class WechatController extends Controller
         $log_file = "wx.log";   //public
         //将接受的数据记录到日志文件中
         $xml_str = file_get_contents("php://input");
-        $data = date('Y-m-d H:i:s') . $xml_str;
+        $data = date('Y-m-d H:i:s') . ">>>>>>\n" . $xml_str . "\n\n";
         file_put_contents($log_file,$data,FILE_APPEND);     //追加写入
 
     //处理xml数据
-    file_put_contents('xml.log',$xml_str);
     $xml_obj = simplexml_load_string($xml_str);
 
+    $event = $xml_obj->Event;   //获取事件类型
+    if ($event=='subscribe') {
+        $openid = $xml_obj->FromUserName;   //获取用户的openid
+        //判断用户是否已存在
+        $u = UserModel::where('openid',$openid)->first();
+        if($u){
+            $msg = '欢迎回来';
+            $xml = '<xml>
+                      <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                      <FromUserName><![CDATA['.$xml_obj->ToUserName.']]></FromUserName>
+                      <CreateTime>'.time().'</CreateTime>
+                      <MsgType><![CDATA[text]]></MsgType>
+                      <Content><![CDATA['.$msg.']]></Content>
+                    </xml>';
+            echo $xml;
+        }else{
+          //获取用户信息
+          $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$this->access_token.'&openid='.$openid.'&lang=zh_CN';
+          $user_info = file_get_contents($url);
+          $u = json_decode($user_info,true);
+          //echo '<pre>';print_r($u);echo '</pre>';die;
+          //入库用户信息
+          $user_data = [
+              'openid' => $openid,
+              'nickname' => $u['nickname'],
+              'sex' => $u['sex'],
+              'headimgurl' => $u['headimgurl'],
+              'subscribe_time' => $u['subscribe_time']
+          ];
+
+          //openid入库
+          $uid = UserModel::insertGetId($user_data);
+
+          $msg = "谢谢您的关注！！！";
+          //回复用户关注
+          $xml = '<xml>
+                    <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                    <FromUserName><![CDATA['.$xml_obj->ToUserName.']]></FromUserName>
+                    <CreateTime>'.time().'</CreateTime>
+                    <MsgType><![CDATA[text]]></MsgType>
+                    <Content><![CDATA['.$msg.']]></Content>
+                  </xml>';
+
+          echo $xml;
+        }
+    }
 
     //判断消息类型
     $msg_type = $xml_obj->MsgType;
@@ -64,13 +122,28 @@ class WechatController extends Controller
       if($msg_type=='text'){
             $content = date('Y-m-d H:i:s') . $xml_obj->Content;
             $response_text = '<xml>
-  <ToUserName><![CDATA['.$touser.']]></ToUserName>
-  <FromUserName><![CDATA['.$fromuser.']]></FromUserName>
-  <CreateTime>'.$time.'</CreateTime>
-  <MsgType><![CDATA[text]]></MsgType>
-  <Content><![CDATA['.$content.']]></Content>
-</xml>';
+                                <ToUserName><![CDATA['.$touser.']]></ToUserName>
+                                <FromUserName><![CDATA['.$fromuser.']]></FromUserName>
+                                <CreateTime>'.$time.'</CreateTime>
+                                <MsgType><![CDATA[text]]></MsgType>
+                                <Content><![CDATA['.$content.']]></Content>
+                              </xml>';
+
             echo $response_text;            // 回复用户消息
         }
+
     }
+
+    /**
+     * 获取用户基本信息
+     */
+    public function getUserInfo($access_token,$openid)
+    {
+        $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$openid.'&lang=zh_CN';
+        //发送网络请求
+        $json_str = file_get_contents($url);
+        $log_file = 'wx_user.log';
+        file_put_contents($log_file,$json_str,FILE_APPEND);
+    }
+
 }
