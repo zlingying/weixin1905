@@ -106,28 +106,27 @@ class WechatController extends Controller
         //打印用户信息
           // echo '<pre>';print_r($u);echo '</pre>';die;
           //入库用户信息
-          $user_data = [
-              'openid' => $openid,
-              'nickname' => $u['nickname'], 
-              'sex' => $u['sex'],
-              'headimgurl' => $u['headimgurl'],
-              'sub_time' => $u['sub_time']
-          ];
-
+          
+      $oppenid = $xml_obj->FromUserName;   //获取用户的oppenid
+               $user_data = [
+                   'openid' => $oppenid,
+                   'sub_time' => $xml_obj->CreateTime,
+                   'nickname' =>$userInfo['nickname'],
+                   'sex' =>$userInfo['sex']
+               ];
           //openid入库
           $uid = UserModel::insertGetId($user_data);
 
           $msg = "谢谢您的关注！！！";
           //回复用户关注
-          $xml = '<xml>
-                    <ToUserName><![CDATA['.$openid.']]></ToUserName>
-                    <FromUserName><![CDATA['.$xml_obj->ToUserName.']]></FromUserName>
-                    <CreateTime>'.time().'</CreateTime>
-                    <MsgType><![CDATA[text]]></MsgType>
-                    <Content><![CDATA['.$msg.']]></Content>
-                  </xml>';
-
-          echo $xml;
+            $response_text = '<xml>
+            <ToUserName><![CDATA[' . $touser . ']]></ToUserName>
+            <FromUserName><![CDATA[' . $fromuser . ']]></FromUserName>
+            <CreateTime>' . $time . '</CreateTime>
+            <MsgType><![CDATA[text]]></MsgType>
+            <Content><![CDATA[' . $msg . ']]></Content>
+          </xml>';
+        echo $response_text;            // 回复用户消息
         }
     }
 
