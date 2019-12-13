@@ -12,21 +12,31 @@
 */
 
 Route::get('/', function () {
+	$file_name = "abc.mp3";
+    $info = pathinfo($file_name);
+
+    echo $file_name . '的文件扩展名为000 : ' . pathinfo($file_name)['extension'];die;
+    echo '<pre>';print_r($info);echo '</pre>';die;
+
     return view('welcome');
 });
 
-Route::any('info',function(){
+Route::get('/info',function(){
 	phpinfo();
 }); 
 
-Route::any('test/hello','Test\TestController@test');
-Route::any('test/redis1','Test\TestController@redis1');
-Route::any('test/guzzle1','Test\TestController@guzzle1');
-Route::any('test/adduser','User\LoginController@addUser');
+Route::get('test/hello','Test\TestController@test');
+Route::get('test/redis1','Test\TestController@redis1');
+Route::get('test/guzzle1','Test\TestController@guzzle1');
+Route::get('test/adduser','User\LoginController@addUser');
+Route::get('test/xml','Test\TestController@xmlTest');
 
-Route::get('/test/baidu','Test\TestController@baidu');
+Route::get('test/baidu','Test\TestController@baidu');
 
 // 微信开发
 
-Route::get('weixin/index','Wechat\WechatController@checkSignature');
+Route::get('weixin/test','Wechat\WechatController@test');
+Route::get('weixin/index','Wechat\WechatController@checkSignature');//处理接入请求
 Route::post('weixin/index','Wechat\WechatController@receiv');         //接收微信的推送事件
+Route::get('weixin/media','Wechat\WechatController@getMedia');         //获取临时素材
+Route::get('/weixin/flush/access_token','Wechat\WechatController@flushAccessToken');        //刷新access_token
