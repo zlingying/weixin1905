@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Wechat;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Model\UserModel;
+use App\Model\WxUserModel;
 use Illuminate\Support\Facades\Redis;
 
 class WechatController extends Controller
@@ -85,7 +85,7 @@ class WechatController extends Controller
     if($event=='subscribe') {
      
         //判断用户是否已存在
-        $u = UserModel::where(['openid'=>$openid])->first();
+        $u = WxUserModel::where(['openid'=>$openid])->first();
         if($u){
             $msg = '欢迎回来';
             $xml = '<xml>
@@ -101,21 +101,22 @@ class WechatController extends Controller
         $access_token=$this->GetAccessToken();
         //调用微信用户信息
         $yonghu=$this->getUserInfo($access_token,$xml_obj->FromUserName);
+        // dd($yonghu);die;x
        //转换用户信息
         $u=json_decode($yonghu,true);
         //打印用户信息
           // echo '<pre>';print_r($u);echo '</pre>';die;
           //入库用户信息
           
-      $oppenid = $xml_obj->FromUserName;   //获取用户的oppenid
+      $openid = $xml_obj->FromUserName;   //获取用户的openid
                $user_data = [
-                   'openid' => $oppenid,
+                   'openid' => $openid,
                    'sub_time' => $xml_obj->CreateTime,
-                   'nickname' =>$u['nickname'],
-                   'sex' =>$u['sex']
+                   'nickname' => $u['nickname'],
+                   'sex' => $u['sex']
                ];
           //openid入库
-          $uid = UserModel::insertGetId($user_data);
+          $uid = WxUserModel::insertGetId($user_data);
 
           $msg = "谢谢您的关注！！！";
           //回复用户关注
@@ -203,8 +204,8 @@ class WechatController extends Controller
     /**
      * 获取用户基本信息
      */
-    public function getUserInfo($access_token,$oppenid){
-        $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$oppenid.'&lang=zh_CN';
+    public function getUserInfo($access_token,$openid){
+        $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$openid.'&lang=zh_CN';
         //发送网络请求
         $json_str = file_get_contents($url);
         $log_file = 'wx.user.log';
