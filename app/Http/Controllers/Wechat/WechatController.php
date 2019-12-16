@@ -99,12 +99,11 @@ class WechatController extends Controller
             echo $xml;
         }else{
 //获取TOKEN
-        $access_token=$this->GetAccessToken();
-        //调用微信用户信息
-        $yonghu=$this->getUserInfo($access_token,$xml_obj->FromUserName);
-        // dd($yonghu);die;x
-       //转换用户信息
-        $u=json_decode($yonghu,true);
+              $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$this->access_token.'&openid='.$openid.'&lang=zh_CN';
+
+                $user_info = file_get_contents($url);       //
+
+                $u = json_decode($user_info,true);
         //打印用户信息
           // echo '<pre>';print_r($u);echo '</pre>';die;
           //入库用户信息
@@ -121,14 +120,20 @@ class WechatController extends Controller
 
           $msg = "谢谢您的关注！！！";
           //回复用户关注
-            $response_text = '<xml>
-            <ToUserName><![CDATA[' . $touser . ']]></ToUserName>
-            <FromUserName><![CDATA[' . $fromuser . ']]></FromUserName>
-            <CreateTime>' . $time . '</CreateTime>
-            <MsgType><![CDATA[text]]></MsgType>
-            <Content><![CDATA[' . $msg . ']]></Content>
-          </xml>';
-        echo $response_text;            // 回复用户消息
+             $xml = '<xml>
+
+  <ToUserName><![CDATA['.$openid.']]></ToUserName>
+
+  <FromUserName><![CDATA['.$xml_obj->ToUserName.']]></FromUserName>
+
+  <CreateTime>'.time().'</CreateTime>
+
+  <MsgType><![CDATA[text]]></MsgType>
+
+  <Content><![CDATA['.$msg.']]></Content>
+
+</xml>';
+        echo $xml;            // 回复用户消息
         }
     }
 
@@ -194,6 +199,8 @@ class WechatController extends Controller
                             <MsgType><![CDATA[video]]></MsgType>
                             <Video>
                               <MediaId><![CDATA['.$media_id.']]></MediaId>
+                              <Title><![CDATA[测试]]></Title>
+                              <Description><![CDATA[不可描述]]></Description>
                             </Video>
                           </xml>';
             echo $response;
