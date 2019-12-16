@@ -194,8 +194,6 @@ class WechatController extends Controller
                             <MsgType><![CDATA[video]]></MsgType>
                             <Video>
                               <MediaId><![CDATA['.$media_id.']]></MediaId>
-                              <Title><![CDATA[测试]]></Title>
-                              <Description><![CDATA[不可描述]]></Description>
                             </Video>
                           </xml>';
             echo $response;
