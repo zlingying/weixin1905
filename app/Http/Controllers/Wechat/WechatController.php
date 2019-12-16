@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Model\WxUserModel;
 use Illuminate\Support\Facades\Redis;
+use GuzzleHttp\Client;
 
 class WechatController extends Controller
 {
@@ -238,7 +239,7 @@ class WechatController extends Controller
         $response = $client->request('GET',$url);
         $f = $response->getHeader('Content-disposition')[0];
         //获取文件扩展名
-        $extendsion = substr(trim($f,'"'), strpos($f,'.'));
+        $extension = substr(trim($f,'"'), strpos($f,'.'));
         //获取文件内容
         $file_content = $response->getBody();
 
