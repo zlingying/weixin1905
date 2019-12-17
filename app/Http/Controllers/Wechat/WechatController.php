@@ -113,7 +113,8 @@ class WechatController extends Controller
                    'openid' => $openid,
                    'sub_time' => $xml_obj->CreateTime,
                    'nickname' => $u['nickname'],
-                   'sex' => $u['sex']
+                   'sex' => $u['sex'],
+                   'headimgurl' => $u['headimgurl']
                ];
           //openid入库
           $uid = WxUserModel::insertGetId($user_data);
