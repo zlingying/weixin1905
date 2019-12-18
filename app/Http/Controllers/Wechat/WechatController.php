@@ -135,7 +135,7 @@ class WechatController extends Controller
           //如果是 获取天气
 
           //请求第三方接口 获取天气
-          $weather_api = '';
+          $weather_api = 'https://free-api.heweather.net/s6/weather/now?location=beijing&key=22e31f651e4247398bfbeaa2586e4876';
           $weather_info = file_get_contents($weather_api);
           $weather_info_arr = json_decode($weather_info,true);
           $cond_txt = $weather_info_arr['HeWeather6'][0]['now']['cond_txt'];
