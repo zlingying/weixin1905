@@ -298,6 +298,10 @@ class WechatController extends Controller
      */
     public function CreateMenu()
     {
+
+        $url = 'http://zly.xx20.top/vote';
+        $redirect_uri = urlencode($url);    //授权后跳转页面
+
       //创建自定义菜单的接口地址
       $url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$this->access_token;
       $menu = [
@@ -306,6 +310,11 @@ class WechatController extends Controller
                 'type' => 'click',
                 'name' => '获取天气',
                 'key' => 'weather'
+              ],
+              [
+                'type' => 'view',
+                'name' => '首页',
+                'url' => 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcb1545d555f7af6d&redirect_uri='.$redirect_uri.'&response_type=code&scope=snsapi_userinfo=ABCD1905#wechat_redirect'
               ],
           ]
       ];

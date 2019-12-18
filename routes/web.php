@@ -36,3 +36,6 @@ Route::post('weixin/index','Wechat\WechatController@receiv');         //接收�
 Route::get('weixin/media','Wechat\WechatController@getMedia');         //获取临时素材
 Route::get('/weixin/flush/access_token','Wechat\WechatController@flushAccessToken');        //刷新access_token
 Route::get('/weixin/menu','Wechat\WechatController@createMenu');        //创建菜单
+
+//微信公众号
+Route::get('/vote','VoteController@index');        //微信投票
