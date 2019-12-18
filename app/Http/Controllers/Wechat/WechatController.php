@@ -84,7 +84,6 @@ class WechatController extends Controller
     $event = $xml_obj->Event;   //获取事件类型
        $openid = $xml_obj->FromUserName;   //获取用户的openid
     if($event=='subscribe') {
-     
         //判断用户是否已存在
         $u = WxUserModel::where(['openid'=>$openid])->first();
         if($u){
@@ -122,19 +121,27 @@ class WechatController extends Controller
           $msg = "谢谢您的关注！！！";
           //回复用户关注
              $xml = '<xml>
-
-  <ToUserName><![CDATA['.$openid.']]></ToUserName>
-
-  <FromUserName><![CDATA['.$xml_obj->ToUserName.']]></FromUserName>
-
-  <CreateTime>'.time().'</CreateTime>
-
-  <MsgType><![CDATA[text]]></MsgType>
-
-  <Content><![CDATA['.$msg.']]></Content>
-
-</xml>';
+                        <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                        <FromUserName><![CDATA['.$xml_obj->ToUserName.']]></FromUserName>
+                        <CreateTime>'.time().'</CreateTime>
+                        <MsgType><![CDATA[text]]></MsgType>
+                        <Content><![CDATA['.$msg.']]></Content>
+                      </xml>';
         echo $xml;            // 回复用户消息
+        }
+    }elseif ($event=='CLICK') {    //菜单点击事件
+        echo "CLICK CLICK";
+
+        //如果是 获取天气
+        if ($xml_obj->EventKey=='weather') {
+            $response_xml = '<xml>
+                      <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                      <FromUserName><![CDATA['.$xml_obj->ToUserName.']]></FromUserName>
+                      <CreateTime>'.time().'</CreateTime>
+                      <MsgType><![CDATA[text]]></MsgType>
+                      <Content><![CDATA['.date('Y-m-d H:i:s') . '晴天' . ']]></Content>
+                    </xml>';
+            echo $response_xml;
         }
     }
 
@@ -274,6 +281,34 @@ class WechatController extends Controller
         $key = 'wx_access_token';
         Redis::del($key);
         echo $this->getAccessToken();
+    }
+
+    /*
+        创建自定义菜单
+     */
+    public function CreateMenu()
+    {
+      //创建自定义菜单的接口地址
+      $url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$this->access_token;
+      $menu = [
+          'button' => [
+              [
+                'type' => 'click',
+                'name' => '获取天气',
+                'key' => 'weather'
+              ],
+          ]
+      ];
+
+      $menu_json = json_encode($menu,JSON_UNESCAPED_UNICODE);
+      $client = new Client();
+      $response = $client->request('POST',$url,[
+        'body' => $menu_json
+      ]);
+
+      echo '<pre>';print_r($menu);echo '</pre>';
+      echo $response->getBody();  //接收 微信接口的响应数据
+
     }
 
 }

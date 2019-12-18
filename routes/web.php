@@ -35,3 +35,4 @@ Route::get('weixin/index','Wechat\WechatController@checkSignature');//处理接�
 Route::post('weixin/index','Wechat\WechatController@receiv');         //接收微信的推送事件
 Route::get('weixin/media','Wechat\WechatController@getMedia');         //获取临时素材
 Route::get('/weixin/flush/access_token','Wechat\WechatController@flushAccessToken');        //刷新access_token
+Route::get('/weixin/menu','Wechat\WechatController@createMenu');        //创建菜单
