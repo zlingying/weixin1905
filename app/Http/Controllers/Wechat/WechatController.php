@@ -306,6 +306,9 @@ class WechatController extends Controller
       $url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$this->access_token;
       $menu = [
           'button' => [
+              /*
+              
+               */
               [
                 'type' => 'click',
                 'name' => '获取天气',
