@@ -25,6 +25,7 @@ Route::get('test/redis1','Test\TestController@redis1');
 Route::get('test/guzzle1','Test\TestController@guzzle1');
 Route::get('test/adduser','User\LoginController@addUser');
 Route::get('test/xml','Test\TestController@xmlTest');
+Route::get('dev/redis/del','VoteController@delKey');
 
 Route::get('test/baidu','Test\TestController@baidu');
 
