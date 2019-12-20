@@ -300,7 +300,9 @@ class WechatController extends Controller
     {
 
         $url = 'http://zly.xx20.top/vote';
+        $url2 = 'http://zly.xx20.top/vote';
         $redirect_uri = urlencode($url);    //授权后跳转页面
+        $redirect_uri2 = urlencode($url2);
 
       //创建自定义菜单的接口地址
       $url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$this->access_token;
@@ -318,6 +320,11 @@ class WechatController extends Controller
                 'type' => 'view',
                 'name' => '投票',
                 'url' => 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcb1545d555f7af6d&redirect_uri='.$redirect_uri.'&response_type=code&scope=snsapi_userinfo&state=ABCD1905#wechat_redirect'
+              ],
+              [
+                'type' => 'view',
+                'name' => '商城',
+                'url' => 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcb1545d555f7af6d&redirect_uri='.$redirect_uri2.'&response_type=code&scope=snsapi_userinfo&state=ABCD1905#wechat_redirect'
               ],
           ]
       ];
