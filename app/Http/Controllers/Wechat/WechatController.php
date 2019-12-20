@@ -300,7 +300,7 @@ class WechatController extends Controller
     {
 
         $url = 'http://zly.xx20.top/vote';
-        $url2 = 'http://zly.xx20.top/vote';
+        $url2 = 'http://zly.xx20.top/';
         $redirect_uri = urlencode($url);    //授权后跳转页面
         $redirect_uri2 = urlencode($url2);
 
