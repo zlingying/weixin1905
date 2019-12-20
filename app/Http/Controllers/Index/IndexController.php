@@ -12,7 +12,7 @@ class IndexController extends Controller
     
     public function index()
     {
-    	$code = $_GET('code');
+    	$code = $_GET['code'];
     	$data = $this->getAccessToken($code);
 
     	//判断用户是否已存在
