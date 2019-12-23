@@ -41,13 +41,23 @@ Route::post('weixin/index','Wechat\WechatController@receiv');         //接收�
 Route::get('weixin/media','Wechat\WechatController@getMedia');         //获取临时素材
 Route::get('/weixin/flush/access_token','Wechat\WechatController@flushAccessToken');        //刷新access_token
 Route::get('/weixin/menu','Wechat\WechatController@createMenu');        //创建菜单
+Route::get('/weixin/qrcode','Wechat\WxQRController@qrcode');        //创建参数的二维码
 
+<<<<<<< HEAD
 //微信公众号   1微信投票
 Route::get('/vote','VoteController@index');        
 
+=======
+//微信公众号
+Route::get('/vote','VoteController@index');        //微信投票
+>>>>>>> qrcode
 
 //微商城
 Route::get('/goods/detail','Goods\IndexController@detail');		//商品详情
 
 //计划任务
+<<<<<<< HEAD
 Route::get('/crontab/send_msg','Crontab\WeiXinController@sendMsg');        // 定时群发
+=======
+Route::get('/crontab/send_msg','Crontab\WechatController@sendMsg');
+>>>>>>> qrcode
