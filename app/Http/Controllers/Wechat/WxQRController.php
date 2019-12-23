@@ -15,8 +15,7 @@ class WxQRController extends Controller
     	$scene_id = $_GET['scene'];	//二维码参数
     	$access_token = WxUserModel::getAccessToken();
     	//第一 获取ticket
-    	$url = 'https://api.weixin.qq.com/cgi-bin/qrcode/create?ticket='.$access_token;
-
+    	$url = 'https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token='.$access_token;
     	$data1 = [
     		'expire_seconds'	=> 604800,
     		'action_name'		=> 'QR_SCENE',
@@ -33,11 +32,12 @@ class WxQRController extends Controller
     	]);
 
     	$json1 = $response->getBody();
+    	// dd($json1);
     	$tiket = json_decode($json1,true)['ticket'];
 
     	//第二 获取带参数的二维码
-    	$url = 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket='.$tiket;
-    	return redirect($url);
+    	$url2 = 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket='.$tiket;
+    	return redirect($url2);
 
     }
 
