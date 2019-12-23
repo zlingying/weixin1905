@@ -21,13 +21,14 @@ class WxMsgController extends AdminController
     public function sendMsg()
     {
     	echo __METHOD__;
-
+    	
+    	//获取用户列表
     	$openid_arr = WxUserModel::select('openid','nickname','sex')->get()->toArray();
     	//echo '<pre>';print_r($openid_arr);echo '</pre>';
     	$openid = array_column($openid_arr,'openid');
     	echo '<pre>';print_r($openid);echo '</pre>';
 
-    	$url = 'https://api.weixin.qq.com/cgi-bin/message/mass/send?access_token=28_ZOIFpb30lh2cJcFi-GDHt8svDsNMkWyqAPeYkXwEWfTIq0U1NDrqvPL4DhL5Yt8ZZR-H5T_9DoEW8jHUfGMjQGBIYRVCNk5Vzb_IUwwhQK3-50tlEK-FBzMbsv8uM5O6pK9QVBFIDn702Z3MVHAeACAIUN';
+    	$url = 'https://api.weixin.qq.com/cgi-bin/message/mass/send?access_token=28_lfA-puvfO-pjEykqyTXlbBsPvVOTi47EvSm8qrRSdavtODE25sgeiUJ0r0LFp5tRVu8k2SJkUL1gBX8zVyMMvss0LzSSWInat-C98jqD7Y6o46sR20tgGqzG7tFbHmoXeyOmkrQitj8sDqBUBAAjAFAUTT';
 
     	$msg = date('Y-m-d H:i:s') . '愿你好运！！！';
 
