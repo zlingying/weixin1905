@@ -157,6 +157,7 @@ class WechatController extends Controller
 
     //判断消息类型
     $msg_type = $xml_obj->MsgType;
+    
     $touser = $xml_obj->FromUserName;   //接收消息的用户openid
     $fromuser = $xml_obj->ToUserName;   //开发者公众号的id
     $time = time();

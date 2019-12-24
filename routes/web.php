@@ -42,6 +42,7 @@ Route::get('weixin/media','Wechat\WechatController@getMedia');         //获取�
 Route::get('/weixin/flush/access_token','Wechat\WechatController@flushAccessToken');        //刷新access_token
 Route::get('/weixin/menu','Wechat\WechatController@createMenu');        //创建菜单
 Route::get('/weixin/qrcode','Wechat\WxQRController@qrcode');        //创建参数的二维码  
+Route::get('/weixin/newyear','Wechat\WechatController@newyear');        //元旦活动页面
 
 
 //微信公众号
