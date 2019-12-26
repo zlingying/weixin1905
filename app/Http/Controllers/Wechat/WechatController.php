@@ -335,15 +335,15 @@ class WechatController extends Controller
       $menu = [
           'button' => [
               [
-                'type' => 'click',
+                'type' => 'view',
                 'name' => '查看课程',
-                'key' => 'weather'
+                'url' => ''
               ],
 
               [
-                'type' => 'click',
+                'type' => 'view',
                 'name' => '管理课程',
-                'key' => 'weather'
+                'url2' => ''
               ],
 
               
