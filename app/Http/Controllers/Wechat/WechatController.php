@@ -325,9 +325,9 @@ class WechatController extends Controller
     public function CreateMenu()
     {
 
-        // $url = 'http://zly.xx20.top/vote';
+        //$url = 'http://zly.xx20.top/vote';
         // $url2 = 'http://zly.xx20.top/wx/login';
-        // $redirect_uri = urlencode($url);    //授权后跳转页面
+        //$redirect_uri = urlencode($url);    //授权后跳转页面
         // $redirect_uri2 = urlencode($url2);
 
       //创建自定义菜单的接口地址
@@ -337,13 +337,13 @@ class WechatController extends Controller
               [
                 'type' => 'click',
                 'name' => '查看课程',
-                'key' => ''
+                'key' => 'ke'
               ],
 
               [
-                'type' => 'view',
+                'type' => 'click',
                 'name' => '管理课程',
-                'url2' => ''
+                'key' => 'ke2'
               ],
 
               
