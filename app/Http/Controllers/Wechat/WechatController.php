@@ -331,7 +331,7 @@ class WechatController extends Controller
         // $redirect_uri2 = urlencode($url2);
 
       //创建自定义菜单的接口地址
-      $url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token=28_a_adekUeuzetGpgf-GDHt8svDsNMkWyqAPeYkSrXJU_Ajvrkg0XCQNHnYXHWn0MJHBZgBgW_CLwLxPilywUd15K8a-sBQrYwCE57gQWGAo6Hmtmz6O2h3ZYdxmJriZofJ1JDHCZzPmAEL6ENEFVeAGARSI';
+      $url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$this->access_token;
       $menu = [
           'button' => [
               [
