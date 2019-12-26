@@ -112,7 +112,7 @@ class WechatController extends Controller
         //判断用户是否已存在
         $u = WxUserModel::where(['openid'=>$openid])->first();
         if($u){
-            $msg = '欢迎回来';
+            $msg = "欢迎".$u['nickname']."同学进入选课系统";
             $xml = '<xml>
                       <ToUserName><![CDATA['.$openid.']]></ToUserName>
                       <FromUserName><![CDATA['.$xml_obj->ToUserName.']]></FromUserName>
