@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Model\WxUserModel;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Str;
 use GuzzleHttp\Client;
 
 class WechatController extends Controller
@@ -18,6 +19,30 @@ class WechatController extends Controller
       //获取 access_token
       $this->access_token = $this->getAccessToken();
     }
+
+    // 微信网页授权登录
+    public function login()
+    {
+        // 1 获取code
+        $code = $_GET['code'];
+        // 2 根据code 换取access_token
+        $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=".env('WX_APPID')."&secret=".env('WX_APPSECRET')."&code={$code}&grant_type=authorization_code";
+        
+        $res_json = file_get_contents($url);    // 请求接口，获取json响应
+        $data = json_decode($res_json,true);    // 将json转换为数组
+        //判断用户是否已存在
+        $openid = $data['openid'];
+        $u = WxUserModel::where(['openid'=>$openid])->first();
+        if($u){     //用户已存在
+            
+        }else{
+            $user_info = $this->getUserInfo($data['access_token'],$data['openid']);
+            //入库
+            WxUserModel::insertGetId($user_info);
+        }
+        return redirect('/');
+    }
+
 
     public function test()
     {
@@ -97,7 +122,7 @@ class WechatController extends Controller
                     </xml>';
             echo $xml;
         }else{
-//获取TOKEN
+//获取TOKEN   获取用户信息
               $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$this->access_token.'&openid='.$openid.'&lang=zh_CN';
 
                 $user_info = file_get_contents($url);       //
@@ -118,7 +143,7 @@ class WechatController extends Controller
           //openid入库
           $uid = WxUserModel::insertGetId($user_data);
 
-          $msg = "谢谢您的关注！！！";
+          $msg = "欢迎$u['nickname']同学进入选课系统";
           //回复用户关注
              $xml = '<xml>
                         <ToUserName><![CDATA['.$openid.']]></ToUserName>
@@ -235,7 +260,7 @@ class WechatController extends Controller
         $json_str = file_get_contents($url);
         $log_file = 'wx.user.log';
         file_put_contents($log_file,$json_str,FILE_APPEND);
-        return $json_str;
+        //return $json_str;
     }
     /**
      * 获取素材
@@ -301,7 +326,7 @@ class WechatController extends Controller
     {
 
         $url = 'http://zly.xx20.top/vote';
-        $url2 = 'http://zly.xx20.top/';
+        $url2 = 'http://zly.xx20.top/wx/login';
         $redirect_uri = urlencode($url);    //授权后跳转页面
         $redirect_uri2 = urlencode($url2);
 
@@ -309,24 +334,34 @@ class WechatController extends Controller
       $url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$this->access_token;
       $menu = [
           'button' => [
-              /*
-              
-               */
-              [
-                'type' => 'click',
-                'name' => '获取天气',
-                'key' => 'weather'
-              ],
               [
                 'type' => 'view',
-                'name' => '投票',
-                'url' => 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcb1545d555f7af6d&redirect_uri='.$redirect_uri.'&response_type=code&scope=snsapi_userinfo&state=ABCD1905#wechat_redirect'
+                'name' => '查看课程',
+                'url' => ''
               ],
+
               [
                 'type' => 'view',
-                'name' => '商城',
-                'url' => 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcb1545d555f7af6d&redirect_uri='.$redirect_uri2.'&response_type=code&scope=snsapi_userinfo&state=ABCD1905#wechat_redirect'
+                'name' => '管理课程',
+                'url' => ''
               ],
+
+             
+              // [
+              //   'type' => 'click',
+              //   'name' => '获取天气',
+              //   'key' => 'weather'
+              // ],
+              // [
+              //   'type' => 'view',
+              //   'name' => '投票',
+              //   'url' => 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcb1545d555f7af6d&redirect_uri='.$redirect_uri.'&response_type=code&scope=snsapi_userinfo&state=ABCD1905#wechat_redirect'
+              // ],
+              // [
+              //   'type' => 'view',
+              //   'name' => '商城',
+              //   'url' => 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcb1545d555f7af6d&redirect_uri='.$redirect_uri2.'&response_type=code&scope=snsapi_userinfo&state=ABCD1905#wechat_redirect'
+              // ],
           ]
       ];
 
@@ -341,4 +376,34 @@ class WechatController extends Controller
 
     }
 
+    //元旦活动
+    public function newYear()
+    {
+        $wx_appid = env('WX_APPID');
+        $noncestr = Str::random(8);
+        $timestamp = time();
+        $url = env('APP_URL') . $_SERVER['REQUEST_URI'];    //当前页面的URL
+        $signature = $this->signature($noncestr,$timestamp,$url);
+        
+        $data = [
+            'appid'         => $wx_appid,
+            'timestamp'     => $timestamp,
+            'noncestr'      => $noncestr,
+            'signature'     => $signature
+        ];
+        
+        return view('weixin.newyear',$data);
+    }
+    
+    // 计算jsapi签名
+    public function signature($noncestr,$timestamp,$url)
+    {
+        $noncestr = $noncestr;
+        // 1 获取 jsapi ticket
+        $ticket = WxUserModel::getJsapiTicket();
+        // 拼接带签名字符串
+        $string1 = "jsapi_ticket={$ticket}&noncestr={$noncestr}&timestamp={$timestamp}&url={$url}";
+        // sha1
+        return  sha1($string1);
+    }
 }

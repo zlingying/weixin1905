@@ -26,7 +26,7 @@ Route::get('/info',function(){
 
 Route::get('test/hello','Test\TestController@test');
 Route::get('test/redis1','Test\TestController@redis1');
-Route::get('test/guzzle1','Test\TestController@guzzle1');
+Route::get('test/guzzle1','Test\TestController@guzzle1'); 
 Route::get('test/adduser','User\LoginController@addUser');
 Route::get('test/xml','Test\TestController@xmlTest');
 Route::get('dev/redis/del','VoteController@delKey');
@@ -52,7 +52,7 @@ Route::get('/vote','VoteController@index');        //微信投票
 Route::get('/goods/detail','Goods\IndexController@detail');		//商品详情
 
 //计划任务
-Route::get('/crontab/send_msg','Crontab\WechatController@sendMsg');        // 定时群发
+Route::get('/crontab/send_msg','Crontab\WeiXinController@sendMsg');        // 定时群发
 
 
 
