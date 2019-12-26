@@ -143,7 +143,7 @@ class WechatController extends Controller
           //openid入库
           $uid = WxUserModel::insertGetId($user_data);
 
-          $msg = "欢迎$u['nickname']同学进入选课系统";
+          $msg = "欢迎同学进入选课系统";
           //回复用户关注
              $xml = '<xml>
                         <ToUserName><![CDATA['.$openid.']]></ToUserName>
