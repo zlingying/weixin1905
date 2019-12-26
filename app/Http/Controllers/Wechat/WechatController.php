@@ -143,7 +143,7 @@ class WechatController extends Controller
           //openid入库
           $uid = WxUserModel::insertGetId($user_data);
 
-          $msg = "欢迎同学进入选课系统";
+          $msg = "欢迎.nickname.同学进入选课系统";
           //回复用户关注
              $xml = '<xml>
                         <ToUserName><![CDATA['.$openid.']]></ToUserName>
@@ -335,33 +335,20 @@ class WechatController extends Controller
       $menu = [
           'button' => [
               [
+                'type' => 'click',
+                'name' => '获取天气',
+                'key' => 'weather'
+              ],
+              [
                 'type' => 'view',
                 'name' => '查看课程',
-                'url' => ''
+                'url' => 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcb1545d555f7af6d&redirect_uri='.$redirect_uri.'&response_type=code&scope=snsapi_userinfo&state=ABCD1905#wechat_redirect'
               ],
-
               [
                 'type' => 'view',
                 'name' => '管理课程',
-                'url' => ''
+                'url' => 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcb1545d555f7af6d&redirect_uri='.$redirect_uri2.'&response_type=code&scope=snsapi_userinfo&state=ABCD1905#wechat_redirect'
               ],
-
-             
-              // [
-              //   'type' => 'click',
-              //   'name' => '获取天气',
-              //   'key' => 'weather'
-              // ],
-              // [
-              //   'type' => 'view',
-              //   'name' => '投票',
-              //   'url' => 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcb1545d555f7af6d&redirect_uri='.$redirect_uri.'&response_type=code&scope=snsapi_userinfo&state=ABCD1905#wechat_redirect'
-              // ],
-              // [
-              //   'type' => 'view',
-              //   'name' => '商城',
-              //   'url' => 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcb1545d555f7af6d&redirect_uri='.$redirect_uri2.'&response_type=code&scope=snsapi_userinfo&state=ABCD1905#wechat_redirect'
-              // ],
           ]
       ];
 
