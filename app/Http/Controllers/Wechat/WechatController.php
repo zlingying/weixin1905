@@ -143,7 +143,7 @@ class WechatController extends Controller
           //openid入库
           $uid = WxUserModel::insertGetId($user_data);
 
-          $msg = "欢迎.nickname.同学进入选课系统";
+          $msg = "欢迎. $u['nickname'] .同学进入选课系统";
           //回复用户关注
              $xml = '<xml>
                         <ToUserName><![CDATA['.$openid.']]></ToUserName>
@@ -331,24 +331,22 @@ class WechatController extends Controller
         $redirect_uri2 = urlencode($url2);
 
       //创建自定义菜单的接口地址
-      $url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token=28_qhUpoT_Nd37z4uCoCb_-krut5OU1k7_5Uluu391QUBL98dLKPxlvQJNNTOMKpHUaA5NuseFefzhDt5j_w9ktcu-52rd3nq8xRn45EjrQXaIRGfcT9GzkDR98xouOSGm5W-xncyIKyrZ_Y28PDSNfAEAJYT';
+      $url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$this->access_token;
       $menu = [
           'button' => [
               [
                 'type' => 'click',
-                'name' => '获取天气',
+                'name' => '查看课程',
                 'key' => 'weather'
               ],
+
               [
-                'type' => 'view',
-                'name' => '查看课程',
-                'url' => 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcb1545d555f7af6d&redirect_uri='.$redirect_uri.'&response_type=code&scope=snsapi_userinfo&state=ABCD1905#wechat_redirect'
-              ],
-              [
-                'type' => 'view',
+                'type' => 'click',
                 'name' => '管理课程',
-                'url' => 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcb1545d555f7af6d&redirect_uri='.$redirect_uri2.'&response_type=code&scope=snsapi_userinfo&state=ABCD1905#wechat_redirect'
+                'key' => 'weather'
               ],
+
+              
           ]
       ];
 
